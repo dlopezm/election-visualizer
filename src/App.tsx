@@ -1,131 +1,58 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+import csvParser from 'papaparse';
+
 import './App.css';
 import { Candidate } from './components/Candidate';
 import { Ballot } from './components/Ballot';
-
-const candidates = [
-    {
-        name: 'A',
-        active: true,
-        votesOnCurrentRound: 4,
-    },
-    {
-        name: 'B',
-        active: true,
-        votesOnCurrentRound: 8,
-    },
-    {
-        name: 'C',
-        active: false,
-        votesOnCurrentRound: 0,
-    },
-    {
-        name: 'D',
-        active: true,
-        votesOnCurrentRound: 9,
-    },
-];
-
-const ballots = [
-    {
-        votes: [
-            {
-                name: 'D',
-                active: true,
-            },
-            {
-                name: 'B',
-                active: true,
-            },
-            {
-                name: 'C',
-                active: false,
-            },
-        ],
-    },
-    {
-        votes: [
-            {
-                name: 'B',
-                active: true,
-            },
-            {
-                name: 'A',
-                active: true,
-            },
-            {
-                name: 'C',
-                active: false,
-            },
-        ],
-    },
-    {
-        votes: [
-            {
-                name: 'D',
-                active: true,
-            },
-            {
-                name: 'C',
-                active: false,
-            },
-            {
-                name: 'A',
-                active: true,
-            },
-        ],
-    },
-    {
-        votes: [
-            {
-                name: 'B',
-                active: true,
-            },
-            {
-                name: 'A',
-                active: true,
-            },
-            {
-                name: 'C',
-                active: false,
-            },
-        ],
-    },
-    {
-        votes: [
-            {
-                name: 'C',
-                active: false,
-            },
-            {
-                name: 'D',
-                active: true,
-            },
-            {
-                name: 'A',
-                active: true,
-            },
-        ],
-    },
-    {
-        votes: [
-            {
-                name: 'D',
-                active: true,
-            },
-            {
-                name: 'A',
-                active: true,
-            },
-            {
-                name: 'B',
-                active: true,
-            },
-        ],
-    },
-];
+import { Candidate as CandidateType } from './state/Candidate';
+import { Ballot as BallotType } from './state/Ballot';
 
 function App(): ReactElement {
+    const [candidates, setCandidates] = useState<CandidateType[]>([]);
+    const [ballots, setBallots] = useState<BallotType[]>([]);
+    useEffect(() => {
+        async function getData(): Promise<void> {
+            const response = await fetch('/data/Inaugural_Ballot.csv');
+            const text = await response.text();
+            const parsed = csvParser.parse(text);
+
+            const candidateNames = (parsed.data[0] as string[]).slice(1);
+
+            const candidates = candidateNames.map((candidate) => {
+                const match = candidate.match(/\[(.*)\]/);
+                const name = match ? match[1] : '';
+                return {
+                    name,
+                    active: true,
+                    votesOnCurrentRound: 0,
+                };
+            });
+            setCandidates(candidates);
+
+            const rawBallots = (parsed.data as string[][]).slice(1);
+            const ballots = rawBallots.map((rawBallot) => {
+                const ballotWithoutTimestamp = rawBallot.slice(1);
+
+                const rankedCandidateNames = Array.from(Array(3).keys()).map(
+                    (number) => {
+                        const choiceIndex = ballotWithoutTimestamp.findIndex(
+                            (choice) => choice.includes(String(number + 1))
+                        );
+                        const candidateName = candidates[choiceIndex].name;
+                        return { name: candidateName, active: true };
+                    }
+                );
+
+                return {
+                    votes: rankedCandidateNames,
+                };
+            });
+
+            setBallots(ballots);
+        }
+        getData();
+    }, []);
+
     return (
         <div className="App">
             <div>
