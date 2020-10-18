@@ -12,12 +12,7 @@ export function Ballot(props: Props): ReactElement {
         <div className="Ballot">
             <ul>
                 {ballot.votes.map((votedCandidate) => (
-                    <li
-                        key={votedCandidate.name}
-                        className={
-                            votedCandidate.active ? undefined : 'eliminated'
-                        }
-                    >
+                    <li key={votedCandidate.name} className={votedCandidate.active ? undefined : 'eliminated'}>
                         {votedCandidate.name}
                     </li>
                 ))}

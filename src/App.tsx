@@ -33,15 +33,13 @@ function App(): ReactElement {
             const ballots = rawBallots.map((rawBallot) => {
                 const ballotWithoutTimestamp = rawBallot.slice(1);
 
-                const rankedCandidateNames = Array.from(Array(3).keys()).map(
-                    (number) => {
-                        const choiceIndex = ballotWithoutTimestamp.findIndex(
-                            (choice) => choice.includes(String(number + 1))
-                        );
-                        const candidateName = candidates[choiceIndex].name;
-                        return { name: candidateName, active: true };
-                    }
-                );
+                const rankedCandidateNames = Array.from(Array(3).keys()).map((number) => {
+                    const choiceIndex = ballotWithoutTimestamp.findIndex((choice) =>
+                        choice.includes(String(number + 1))
+                    );
+                    const candidateName = candidates[choiceIndex].name;
+                    return { name: candidateName, active: true };
+                });
 
                 return {
                     votes: rankedCandidateNames,
