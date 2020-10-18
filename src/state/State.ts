@@ -1,7 +1,7 @@
 import { Ballot } from './Ballot';
 import { Candidate } from './Candidate';
 
-interface Phase {
+export interface Phase {
     candidates: Candidate[];
     ballots: Ballot[];
 }

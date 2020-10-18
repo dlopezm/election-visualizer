@@ -7,7 +7,7 @@ import { Candidate } from './components/Candidate';
 import { Ballot } from './components/Ballot';
 import { Candidate as CandidateType } from './state/Candidate';
 import { Ballot as BallotType } from './state/Ballot';
-import { State } from './state/State';
+import { Phase, State } from './state/State';
 import { NUM_ELECTED } from './constants';
 
 function calculateNewPhase(
@@ -38,6 +38,25 @@ function calculateNewPhase(
     // ToDo: sort also by second and third preference votes
     candidateStateForThisPhase.sort((a, b) => b.votesOnCurrentRound - a.votesOnCurrentRound);
     return { newCandidates: candidateStateForThisPhase, newBallots: ballots };
+}
+
+function eliminateCandidate(phase: Phase): void {
+    let eliminatedCandidateName: string | null = null;
+    for (let i = phase.candidates.length - 1; i >= 0; --i) {
+        if (phase.candidates[i].active) {
+            eliminatedCandidateName = phase.candidates[i].name;
+            phase.candidates[i].active = false;
+            break;
+        }
+    }
+
+    phase.ballots.forEach((ballot) => {
+        ballot.votes.forEach((vote) => {
+            if (vote.candidateName === eliminatedCandidateName) {
+                vote.active = false;
+            }
+        });
+    });
 }
 
 function App(): ReactElement {
@@ -94,31 +113,14 @@ function App(): ReactElement {
 
             // ToDo: check for NUM_ELECTED people elected
             while (state.phases.length <= candidates.length - NUM_ELECTED) {
-                // eliminate candidate
                 const phase = cloneDeep(state.phases[state.phases.length - 1]);
-                let eliminatedCandidateName: string | null = null;
-                for (let i = phase.candidates.length - 1; i >= 0; --i) {
-                    if (phase.candidates[i].active) {
-                        eliminatedCandidateName = phase.candidates[i].name;
-                        phase.candidates[i].active = false;
-                        break;
-                    }
-                }
-
-                phase.ballots.forEach((ballot) => {
-                    ballot.votes.forEach((vote) => {
-                        if (vote.candidateName === eliminatedCandidateName) {
-                            vote.active = false;
-                        }
-                    });
-                });
+                eliminateCandidate(phase);
 
                 const { newCandidates, newBallots } = calculateNewPhase(phase.candidates, phase.ballots);
                 state.phases.push({
                     candidates: newCandidates,
                     ballots: newBallots,
                 });
-                // count votes
             }
 
             setFullState(state);
