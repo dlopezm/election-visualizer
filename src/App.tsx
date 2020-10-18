@@ -16,27 +16,38 @@ function calculateNewPhase(
 ): { newCandidates: CandidateType[]; newBallots: BallotType[] } {
     const candidateStateForThisPhase = candidates.map((candidate) => ({
         ...candidate,
-        votesOnCurrentRound: 0,
+        votesOnCurrentRound: Array(NUM_ELECTED).fill(0),
     }));
     ballots.forEach((ballot) => {
-        const currentTopCandidate = ballot.votes.find((vote) => vote.active);
-        if (currentTopCandidate) {
-            const votedCandidate = candidateStateForThisPhase.find(
-                (candidate) => candidate.name === currentTopCandidate.candidateName
-            );
+        const preferences = ballot.votes.reduce((acc, vote) => {
+            if (vote.active) {
+                acc.push(vote.candidateName);
+            }
+            return acc;
+        }, new Array<string>());
+        preferences.forEach((candidateName, index) => {
+            const votedCandidate = candidateStateForThisPhase.find((candidate) => candidate.name === candidateName);
             if (votedCandidate) {
-                ++votedCandidate.votesOnCurrentRound;
+                ++votedCandidate.votesOnCurrentRound[index];
             } else {
                 // doing this mostly to keep the very strict eslint happy
                 console.error(
-                    `Something went horribly wrong, trying to assing a vote to candidate ${currentTopCandidate.candidateName}, but it was not found on the candidate list`
+                    `Something went horribly wrong, trying to assing a vote to candidate ${candidateName}, but it was not found on the candidate list`
                 );
             }
-        }
+        });
     });
 
     // ToDo: sort also by second and third preference votes
-    candidateStateForThisPhase.sort((a, b) => b.votesOnCurrentRound - a.votesOnCurrentRound);
+    candidateStateForThisPhase.sort((a, b) => {
+        for (let i = 0; i < a.votesOnCurrentRound.length; ++i) {
+            const result = b.votesOnCurrentRound[i] - a.votesOnCurrentRound[i];
+            if (result !== 0) {
+                return result;
+            }
+        }
+        return 0;
+    });
     return { newCandidates: candidateStateForThisPhase, newBallots: ballots };
 }
 
@@ -75,7 +86,7 @@ function App(): ReactElement {
                 return {
                     name,
                     active: true,
-                    votesOnCurrentRound: 0,
+                    votesOnCurrentRound: Array(NUM_ELECTED).fill(0),
                 };
             });
 
@@ -133,7 +144,6 @@ function App(): ReactElement {
             ...fullState,
             activePhase: Math.min(fullState.phases.length - 1, fullState.activePhase + 1),
         });
-        console.log(fullState.activePhase);
     }
 
     function decrementPhase(): void {
