@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import './Ballot.css';
 import { Ballot as BallotType } from '../state/Ballot';
+import { Status } from '../state/Status';
 
 export interface Props {
     ballot: BallotType;
@@ -12,7 +13,10 @@ export function Ballot(props: Props): ReactElement {
         <div className="Ballot">
             <ul>
                 {ballot.votes.map((votedCandidate) => (
-                    <li key={votedCandidate.candidateName} className={votedCandidate.active ? undefined : 'eliminated'}>
+                    <li
+                        key={votedCandidate.candidateName}
+                        className={votedCandidate.status === Status.eliminated ? 'eliminated' : undefined}
+                    >
                         {votedCandidate.candidateName}
                     </li>
                 ))}

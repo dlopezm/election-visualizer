@@ -1,5 +1,7 @@
+import { Status } from './Status';
+
 export interface Candidate {
     name: string;
-    active: boolean;
+    status: Status;
     votesOnCurrentRound: number[];
 }

@@ -1,7 +1,9 @@
+import { Status } from './Status';
+
 interface Vote {
     candidateName: string;
     candidateIndex: number;
-    active: boolean;
+    status: Status;
 }
 export interface Ballot {
     votes: Vote[];

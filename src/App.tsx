@@ -9,6 +9,7 @@ import { Candidate as CandidateType } from './state/Candidate';
 import { Ballot as BallotType } from './state/Ballot';
 import { Phase, State } from './state/State';
 import { NUM_ELECTED } from './constants';
+import { Status } from './state/Status';
 
 function calculateNewPhase(
     candidates: CandidateType[],
@@ -20,7 +21,7 @@ function calculateNewPhase(
     }));
     ballots.forEach((ballot) => {
         const preferences = ballot.votes.reduce((acc, vote) => {
-            if (vote.active) {
+            if (vote.status !== Status.eliminated) {
                 acc.push(vote.candidateName);
             }
             return acc;
@@ -54,9 +55,9 @@ function calculateNewPhase(
 function eliminateCandidate(phase: Phase): void {
     let eliminatedCandidateName: string | null = null;
     for (let i = phase.candidates.length - 1; i >= 0; --i) {
-        if (phase.candidates[i].active) {
+        if (phase.candidates[i].status === Status.active) {
             eliminatedCandidateName = phase.candidates[i].name;
-            phase.candidates[i].active = false;
+            phase.candidates[i].status = Status.eliminated;
             break;
         }
     }
@@ -64,7 +65,7 @@ function eliminateCandidate(phase: Phase): void {
     phase.ballots.forEach((ballot) => {
         ballot.votes.forEach((vote) => {
             if (vote.candidateName === eliminatedCandidateName) {
-                vote.active = false;
+                vote.status = Status.eliminated;
             }
         });
     });
@@ -85,7 +86,7 @@ function App(): ReactElement {
                 const name = match ? match[1] : '';
                 return {
                     name,
-                    active: true,
+                    status: Status.active,
                     votesOnCurrentRound: Array(NUM_ELECTED).fill(0),
                 };
             });
@@ -103,7 +104,7 @@ function App(): ReactElement {
                         return {
                             candidateName: candidateName,
                             candidateIndex: choiceIndex,
-                            active: true,
+                            status: Status.active,
                         };
                     });
 
