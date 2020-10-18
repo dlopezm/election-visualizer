@@ -1,15 +1,46 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import csvParser from 'papaparse';
+import cloneDeep from 'lodash.clonedeep';
 
 import './App.css';
 import { Candidate } from './components/Candidate';
 import { Ballot } from './components/Ballot';
 import { Candidate as CandidateType } from './state/Candidate';
 import { Ballot as BallotType } from './state/Ballot';
+import { State } from './state/State';
+
+function calculateNewPhase(
+    candidates: CandidateType[],
+    ballots: BallotType[]
+): { newCandidates: CandidateType[]; newBallots: BallotType[] } {
+    const candidateStateForThisPhase = candidates.map((candidate) => ({
+        ...candidate,
+        votesOnCurrentRound: 0,
+    }));
+    ballots.forEach((ballot) => {
+        const currentTopCandidate = ballot.votes.find((vote) => vote.active);
+        if (currentTopCandidate) {
+            const votedCandidate = candidateStateForThisPhase.find(
+                (candidate) => candidate.name === currentTopCandidate.candidateName
+            );
+            if (votedCandidate) {
+                ++votedCandidate.votesOnCurrentRound;
+            } else {
+                // doing this mostly to keep the very strict eslint happy
+                console.error(
+                    `Something went horribly wrong, trying to assing a vote to candidate ${currentTopCandidate.candidateName}, but it was not found on the candidate list`
+                );
+            }
+        }
+    });
+
+    // ToDo: sort also by second and third preference votes
+    candidateStateForThisPhase.sort((a, b) => b.votesOnCurrentRound - a.votesOnCurrentRound);
+    return { newCandidates: candidateStateForThisPhase, newBallots: ballots };
+}
 
 function App(): ReactElement {
-    const [candidates, setCandidates] = useState<CandidateType[]>([]);
-    const [ballots, setBallots] = useState<BallotType[]>([]);
+    const [fullState, setFullState] = useState<State>({ phases: [], activePhase: 0 });
     useEffect(() => {
         async function getData(): Promise<void> {
             const response = await fetch('/data/Inaugural_Ballot.csv');
@@ -27,26 +58,69 @@ function App(): ReactElement {
                     votesOnCurrentRound: 0,
                 };
             });
-            setCandidates(candidates);
 
             const rawBallots = (parsed.data as string[][]).slice(1);
-            const ballots = rawBallots.map((rawBallot) => {
-                const ballotWithoutTimestamp = rawBallot.slice(1);
+            const ballots = rawBallots.map(
+                (rawBallot): BallotType => {
+                    const ballotWithoutTimestamp = rawBallot.slice(1);
 
-                const rankedCandidateNames = Array.from(Array(3).keys()).map((number) => {
-                    const choiceIndex = ballotWithoutTimestamp.findIndex((choice) =>
-                        choice.includes(String(number + 1))
-                    );
-                    const candidateName = candidates[choiceIndex].name;
-                    return { name: candidateName, active: true };
-                });
+                    const rankedCandidateNames = Array.from(Array(3).keys()).map((number) => {
+                        const choiceIndex = ballotWithoutTimestamp.findIndex((choice) =>
+                            choice.includes(String(number + 1))
+                        );
+                        const candidateName = candidates[choiceIndex].name;
+                        return {
+                            candidateName: candidateName,
+                            candidateIndex: choiceIndex,
+                            active: true,
+                        };
+                    });
 
-                return {
-                    votes: rankedCandidateNames,
-                };
+                    return {
+                        votes: rankedCandidateNames,
+                    };
+                }
+            );
+
+            const state: State = cloneDeep(fullState);
+
+            const { newCandidates, newBallots } = calculateNewPhase(candidates, ballots);
+
+            state.phases.push({
+                candidates: newCandidates,
+                ballots: newBallots,
             });
 
-            setBallots(ballots);
+            // ToDo: check for 3 people elected
+            while (state.phases.length <= candidates.length - 3) {
+                // eliminate candidate
+                const phase = cloneDeep(state.phases[state.phases.length - 1]);
+                let eliminatedCandidateName: string | null = null;
+                for (let i = phase.candidates.length - 1; i >= 0; --i) {
+                    if (phase.candidates[i].active) {
+                        eliminatedCandidateName = phase.candidates[i].name;
+                        phase.candidates[i].active = false;
+                        break;
+                    }
+                }
+
+                phase.ballots.forEach((ballot) => {
+                    ballot.votes.forEach((vote) => {
+                        if (vote.candidateName === eliminatedCandidateName) {
+                            vote.active = false;
+                        }
+                    });
+                });
+
+                const { newCandidates, newBallots } = calculateNewPhase(phase.candidates, phase.ballots);
+                state.phases.push({
+                    candidates: newCandidates,
+                    ballots: newBallots,
+                });
+                // count votes
+            }
+
+            setFullState(state);
         }
         getData();
     }, []);
@@ -54,14 +128,14 @@ function App(): ReactElement {
     return (
         <div className="App">
             <div>
-                {candidates.map((candidate) => (
-                    <Candidate key={candidate.name} candidate={candidate} />
-                ))}
+                {fullState.phases[0] &&
+                    fullState.phases[0].candidates.map((candidate) => (
+                        <Candidate key={candidate.name} candidate={candidate} />
+                    ))}
             </div>
             <div>
-                {ballots.map((ballot, index) => (
-                    <Ballot key={index} ballot={ballot} />
-                ))}
+                {fullState.phases[0] &&
+                    fullState.phases[0].ballots.map((ballot, index) => <Ballot key={index} ballot={ballot} />)}
             </div>
         </div>
     );
