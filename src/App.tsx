@@ -8,6 +8,7 @@ import { Ballot } from './components/Ballot';
 import { Candidate as CandidateType } from './state/Candidate';
 import { Ballot as BallotType } from './state/Ballot';
 import { State } from './state/State';
+import { NUM_ELECTED } from './constants';
 
 function calculateNewPhase(
     candidates: CandidateType[],
@@ -64,7 +65,7 @@ function App(): ReactElement {
                 (rawBallot): BallotType => {
                     const ballotWithoutTimestamp = rawBallot.slice(1);
 
-                    const rankedCandidateNames = Array.from(Array(3).keys()).map((number) => {
+                    const rankedCandidateNames = Array.from(Array(NUM_ELECTED).keys()).map((number) => {
                         const choiceIndex = ballotWithoutTimestamp.findIndex((choice) =>
                             choice.includes(String(number + 1))
                         );
@@ -91,8 +92,8 @@ function App(): ReactElement {
                 ballots: newBallots,
             });
 
-            // ToDo: check for 3 people elected
-            while (state.phases.length <= candidates.length - 3) {
+            // ToDo: check for NUM_ELECTED people elected
+            while (state.phases.length <= candidates.length - NUM_ELECTED) {
                 // eliminate candidate
                 const phase = cloneDeep(state.phases[state.phases.length - 1]);
                 let eliminatedCandidateName: string | null = null;
@@ -125,17 +126,42 @@ function App(): ReactElement {
         getData();
     }, []);
 
+    function incrementPhase(): void {
+        setFullState({
+            ...fullState,
+            activePhase: Math.min(fullState.phases.length - 1, fullState.activePhase + 1),
+        });
+        console.log(fullState.activePhase);
+    }
+
+    function decrementPhase(): void {
+        setFullState({
+            ...fullState,
+            activePhase: Math.max(0, fullState.activePhase - 1),
+        });
+    }
+
     return (
         <div className="App">
             <div>
-                {fullState.phases[0] &&
-                    fullState.phases[0].candidates.map((candidate) => (
+                {fullState.phases[fullState.activePhase] &&
+                    fullState.phases[fullState.activePhase].candidates.map((candidate) => (
                         <Candidate key={candidate.name} candidate={candidate} />
                     ))}
             </div>
             <div>
-                {fullState.phases[0] &&
-                    fullState.phases[0].ballots.map((ballot, index) => <Ballot key={index} ballot={ballot} />)}
+                <button onClick={decrementPhase} disabled={fullState.activePhase === 0}>
+                    Previous phase
+                </button>
+                <button onClick={incrementPhase} disabled={fullState.activePhase === fullState.phases.length - 1}>
+                    Next phase
+                </button>
+            </div>
+            <div>
+                {fullState.phases[fullState.activePhase] &&
+                    fullState.phases[fullState.activePhase].ballots.map((ballot, index) => (
+                        <Ballot key={index} ballot={ballot} />
+                    ))}
             </div>
         </div>
     );
