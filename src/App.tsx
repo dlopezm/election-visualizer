@@ -8,7 +8,7 @@ import { Ballot } from './components/Ballot';
 import { Candidate as CandidateType } from './state/Candidate';
 import { Ballot as BallotType, Vote } from './state/Ballot';
 import { Phase, State } from './state/State';
-import { NUM_ELECTED } from './constants';
+import { NUM_ELECTED, QUOTA_RATIO } from './constants';
 import { Status } from './state/Status';
 
 function calculateNewPhase(
@@ -128,6 +128,8 @@ function App(): ReactElement {
                     };
                 }
             );
+            const autoElectQuota = Math.ceil(ballots.length * QUOTA_RATIO);
+            console.log(`Any candidate with ${autoElectQuota} votes or more is automatically elected`);
 
             const state: State = cloneDeep(fullState);
 
@@ -150,14 +152,13 @@ function App(): ReactElement {
                 for (let i = 0; i < phase.candidates.length && !someCandidateElectedThisPhase; ++i) {
                     const candidate = phase.candidates[i];
                     const activeCandidateVotes = candidate.votesOnCurrentRound[0];
-                    const MIN_VOTES = 17;
-                    if (candidate.status !== Status.elected && activeCandidateVotes >= MIN_VOTES) {
+                    if (candidate.status !== Status.elected && activeCandidateVotes >= autoElectQuota) {
                         phase.candidates[i].status = Status.elected;
                         phase.candidates[i].votesWhenElected = activeCandidateVotes;
                         phase.candidates[i].positionWhenElected = i;
                         someCandidateElectedThisPhase = true;
                         console.log(`${candidate.name} elected!`);
-                        const extraVotesToDistribute = (activeCandidateVotes - MIN_VOTES) / activeCandidateVotes;
+                        const extraVotesToDistribute = (activeCandidateVotes - autoElectQuota) / activeCandidateVotes;
                         phase.ballots.forEach((ballot) => {
                             let votedForElectedCandidate = false;
                             let extraVotesDistributed = false;
