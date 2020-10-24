@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import './Candidate.css';
+import './components.css';
 import { Candidate as CandidateType } from '../state/Candidate';
 import { Status } from '../state/Status';
 import { formatNumber } from '../utils';

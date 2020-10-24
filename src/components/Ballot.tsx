@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import './Ballot.css';
+import './components.css';
 import { Ballot as BallotType } from '../state/Ballot';
 import { Status } from '../state/Status';
 import { formatNumber } from '../utils';
@@ -14,19 +14,22 @@ export function Ballot(props: Props): ReactElement {
         <div className="Ballot">
             <ul>
                 {ballot.votes.map((vote) => (
-                    <li
-                        key={vote.candidateName}
-                        className={
-                            vote.status === Status.eliminated
-                                ? 'eliminated'
-                                : vote.status === Status.elected
-                                ? 'elected'
-                                : undefined
-                        }
-                    >
-                        {vote.candidateName}
-                        {vote.value !== 1 ? `(${formatNumber(vote.value, 3)})` : ''}
-                    </li>
+                    <>
+                        <li
+                            key={vote.candidateName}
+                            className={
+                                vote.status === Status.eliminated
+                                    ? 'eliminated'
+                                    : vote.status === Status.elected
+                                    ? 'elected'
+                                    : undefined
+                            }
+                        >
+                            {vote.candidateName}
+                            {vote.value !== 1 ? `(${formatNumber(vote.value, 3)})` : ''}
+                        </li>
+                        <br />
+                    </>
                 ))}
             </ul>
         </div>
