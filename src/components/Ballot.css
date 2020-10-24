@@ -17,4 +17,8 @@ ul {
 li {
     display: inline-block;
 }
+
+.elected {
+    color: green;
+}
   

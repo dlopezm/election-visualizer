@@ -2,3 +2,7 @@
   color: #666666;
   text-decoration: line-through;
 }
+
+.elected {
+  color: green;
+}
