@@ -15,7 +15,7 @@ function App(): ReactElement {
     const [fullState, setFullState] = useState<State>({ phases: [], activePhase: 0 });
     useEffect(() => {
         async function getData(): Promise<void> {
-            const response = await fetch('/data/Inaugural_Ballot.csv');
+            const response = await fetch(`${process.env.PUBLIC_URL}/data/Inaugural_Ballot.csv`);
             const text = await response.text();
             const parsed = csvParser.parse(text);
 
