@@ -5,11 +5,11 @@ import './App.css';
 import { Ballot } from './components/Ballot';
 import { Ballot as BallotType } from './state/Ballot';
 import { State } from './state/State';
-import { NUM_ELECTED } from './constants';
 import { Status } from './state/Status';
 import { calculateState } from './state/CalculateState';
 import { CandidateTable } from './components/CandidateTable';
 import { range } from './utils';
+import { NUM_VOTED } from './constants';
 
 function App(): ReactElement {
     const [fullState, setFullState] = useState<State>({ phases: [], activePhase: 0 });
@@ -27,7 +27,7 @@ function App(): ReactElement {
                 return {
                     name,
                     status: Status.active,
-                    votesOnCurrentRound: Array(NUM_ELECTED).fill(0),
+                    votesOnCurrentRound: Array(NUM_VOTED).fill(0),
                 };
             });
 
@@ -36,7 +36,7 @@ function App(): ReactElement {
                 (rawBallot): BallotType => {
                     const ballotWithoutTimestamp = rawBallot.slice(1);
 
-                    const rankedCandidateNames = range(NUM_ELECTED).map((number) => {
+                    const rankedCandidateNames = range(NUM_VOTED).map((number) => {
                         const choiceIndex = ballotWithoutTimestamp.findIndex((choice) =>
                             choice.includes(String(number + 1))
                         );

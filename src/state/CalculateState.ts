@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 
-import { NUM_ELECTED, QUOTA_RATIO } from '../constants';
+import { NUM_ELECTED, NUM_VOTED, QUOTA_RATIO } from '../constants';
 import { Ballot, Vote } from './Ballot';
 import { Candidate } from './Candidate';
 import { Phase, State } from './State';
@@ -12,7 +12,7 @@ function calculateNewPhase(
 ): { newCandidates: Candidate[]; newBallots: Ballot[] } {
     const candidateStateForThisPhase = candidates.map((candidate) => ({
         ...candidate,
-        votesOnCurrentRound: Array(NUM_ELECTED).fill(0),
+        votesOnCurrentRound: Array(NUM_VOTED).fill(0),
     }));
     ballots.forEach((ballot) => {
         const preferences = ballot.votes.reduce((acc, vote) => {

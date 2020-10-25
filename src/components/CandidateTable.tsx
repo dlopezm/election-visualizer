@@ -5,7 +5,7 @@ import './components.css';
 import { Candidate as CandidateType } from '../state/Candidate';
 import { Candidate } from './Candidate';
 import { range } from '../utils';
-import { NUM_ELECTED } from '../constants';
+import { NUM_VOTED } from '../constants';
 
 export interface Props {
     candidates: CandidateType[];
@@ -20,7 +20,7 @@ export class CandidateTable extends React.Component<Props> {
                 <FlipMove>
                     <tr>
                         <th>Name</th>
-                        {range(NUM_ELECTED).map((index) => (
+                        {range(NUM_VOTED).map((index) => (
                             <th key={index}>{`Preference ${index + 1} votes`}</th>
                         ))}
                     </tr>
