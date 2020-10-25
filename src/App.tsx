@@ -1,5 +1,6 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import csvParser from 'papaparse';
+import FlipMove from 'react-flip-move';
 
 import './App.css';
 import { Candidate } from './components/Candidate';
@@ -75,10 +76,13 @@ function App(): ReactElement {
     return (
         <div className="App">
             <div>
-                {fullState.phases[fullState.activePhase] &&
-                    fullState.phases[fullState.activePhase].candidates.map((candidate) => (
-                        <Candidate key={candidate.name} candidate={candidate} />
-                    ))}
+                {fullState.phases[fullState.activePhase] && (
+                    <FlipMove>
+                        {fullState.phases[fullState.activePhase].candidates.map((candidate) => (
+                            <Candidate key={candidate.name} candidate={candidate} />
+                        ))}
+                    </FlipMove>
+                )}
             </div>
             <div>
                 <button onClick={decrementPhase} disabled={fullState.activePhase === 0}>

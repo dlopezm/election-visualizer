@@ -22,20 +22,22 @@ const renderVotes = (candidate: CandidateType): ReactElement | null => {
     );
 };
 
-export function Candidate(props: Props): ReactElement {
-    const { candidate } = props;
-    return (
-        <div
-            className={
-                candidate.status === Status.eliminated
-                    ? 'eliminated'
-                    : candidate.status === Status.elected
-                    ? 'elected'
-                    : undefined
-            }
-        >
-            <span>{candidate.name}</span>
-            {renderVotes(candidate)}
-        </div>
-    );
+export class Candidate extends React.Component<Props> {
+    render(): ReactElement {
+        const { candidate } = this.props;
+        return (
+            <div
+                className={
+                    candidate.status === Status.eliminated
+                        ? 'eliminated'
+                        : candidate.status === Status.elected
+                        ? 'elected'
+                        : undefined
+                }
+            >
+                <span>{candidate.name}</span>
+                {renderVotes(candidate)}
+            </div>
+        );
+    }
 }
