@@ -47,5 +47,24 @@ button:disabled {
     background-color: lightgray;
 }
 
+.candidateTable{
+    margin: auto;
+    display:inline-block;
+}
+  
+.candidateTableWrapper{
+    position:relative;
+}
+  
+.expandButton{
+    display:inline-block;
+  
+    float: none;
+    margin-right: 0;
+    position: absolute;
+    top: 0;
+    height: 100%;
+}
+
 
   

@@ -11,24 +11,47 @@ export interface Props {
     candidates: CandidateType[];
 }
 
-export class CandidateTable extends React.Component<Props> {
+export interface State {
+    expanded: boolean;
+}
+
+export class CandidateTable extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            expanded: false,
+        };
+    }
+
     render(): ReactElement {
         const { candidates } = this.props;
-
+        const { expanded } = this.state;
+        let votesToRender = range(NUM_VOTED);
+        if (!expanded) {
+            votesToRender = votesToRender.slice(0, 1);
+        }
         return (
-            <table className="candidateTable">
-                <FlipMove>
-                    <tr>
-                        <th>Name</th>
-                        {range(NUM_VOTED).map((index) => (
-                            <th key={index}>{`Preference ${index + 1} votes`}</th>
+            <div className="candidateTableWrapper">
+                <table className="candidateTable">
+                    <FlipMove>
+                        <tr>
+                            <th>Name</th>
+                            {votesToRender.map((index) => (
+                                <th key={index}>{`Rank ${index + 1} votes`}</th>
+                            ))}
+                        </tr>
+                        {candidates.map((candidate) => (
+                            <Candidate key={candidate.name} candidate={candidate} expanded={this.state.expanded} />
                         ))}
-                    </tr>
-                    {candidates.map((candidate) => (
-                        <Candidate key={candidate.name} candidate={candidate} />
-                    ))}
-                </FlipMove>
-            </table>
+                    </FlipMove>
+                </table>
+                <button
+                    className="expandButton"
+                    onClick={(): void => this.setState({ expanded: !this.state.expanded })}
+                >
+                    {this.state.expanded ? '<' : '>'}
+                </button>
+            </div>
         );
     }
 }

@@ -6,13 +6,17 @@ import { formatNumber } from '../utils';
 
 export interface Props {
     candidate: CandidateType;
+    expanded: boolean;
 }
 
 export class Candidate extends React.Component<Props> {
     render(): ReactElement {
-        const { candidate } = this.props;
+        const { candidate, expanded } = this.props;
 
-        const votesToRender = candidate.votesOnLastStage ? candidate.votesOnLastStage : candidate.votesOnCurrentRound;
+        let votesToRender = candidate.votesOnLastStage ? candidate.votesOnLastStage : candidate.votesOnCurrentRound;
+        if (!expanded) {
+            votesToRender = votesToRender.slice(0, 1);
+        }
         return (
             <tr
                 key={candidate.name}
