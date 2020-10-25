@@ -4,6 +4,6 @@ export interface Candidate {
     name: string;
     status: Status;
     votesOnCurrentRound: number[];
-    votesWhenElected?: number;
+    votesOnLastStage?: number[];
     positionWhenElected?: number;
 }

@@ -1,15 +1,15 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import csvParser from 'papaparse';
-import FlipMove from 'react-flip-move';
 
 import './App.css';
-import { Candidate } from './components/Candidate';
 import { Ballot } from './components/Ballot';
 import { Ballot as BallotType } from './state/Ballot';
 import { State } from './state/State';
 import { NUM_ELECTED } from './constants';
 import { Status } from './state/Status';
 import { calculateState } from './state/CalculateState';
+import { CandidateTable } from './components/CandidateTable';
+import { range } from './utils';
 
 function App(): ReactElement {
     const [fullState, setFullState] = useState<State>({ phases: [], activePhase: 0 });
@@ -36,7 +36,7 @@ function App(): ReactElement {
                 (rawBallot): BallotType => {
                     const ballotWithoutTimestamp = rawBallot.slice(1);
 
-                    const rankedCandidateNames = Array.from(Array(NUM_ELECTED).keys()).map((number) => {
+                    const rankedCandidateNames = range(NUM_ELECTED).map((number) => {
                         const choiceIndex = ballotWithoutTimestamp.findIndex((choice) =>
                             choice.includes(String(number + 1))
                         );
@@ -77,11 +77,11 @@ function App(): ReactElement {
         <div className="App">
             <div>
                 {fullState.phases[fullState.activePhase] && (
-                    <FlipMove>
-                        {fullState.phases[fullState.activePhase].candidates.map((candidate) => (
-                            <Candidate key={candidate.name} candidate={candidate} />
-                        ))}
-                    </FlipMove>
+                    <>
+                        <CandidateTable
+                            candidates={fullState.phases[fullState.activePhase].candidates}
+                        ></CandidateTable>
+                    </>
                 )}
             </div>
             <div>

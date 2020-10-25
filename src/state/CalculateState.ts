@@ -68,6 +68,7 @@ function eliminateCandidate(phase: Phase): void {
         if (phase.candidates[i].status === Status.active) {
             eliminatedCandidateName = phase.candidates[i].name;
             phase.candidates[i].status = Status.eliminated;
+            phase.candidates[i].votesOnLastStage = phase.candidates[i].votesOnCurrentRound;
             break;
         }
     }
@@ -107,7 +108,7 @@ export const calculateState = (candidates: Candidate[], ballots: Ballot[]): Stat
             const activeCandidateVotes = candidate.votesOnCurrentRound[0];
             if (candidate.status !== Status.elected && activeCandidateVotes >= autoElectQuota) {
                 phase.candidates[i].status = Status.elected;
-                phase.candidates[i].votesWhenElected = activeCandidateVotes;
+                phase.candidates[i].votesOnLastStage = candidate.votesOnCurrentRound;
                 phase.candidates[i].positionWhenElected = i;
                 someCandidateElectedThisPhase = true;
                 console.log(`${candidate.name} elected!`);

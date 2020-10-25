@@ -8,25 +8,14 @@ export interface Props {
     candidate: CandidateType;
 }
 
-const renderVotes = (candidate: CandidateType): ReactElement | null => {
-    if (candidate.status === Status.eliminated) {
-        return null;
-    }
-    return (
-        <span>
-            :&nbsp;
-            {candidate.votesWhenElected
-                ? formatNumber(candidate.votesWhenElected, 3)
-                : candidate.votesOnCurrentRound.map((value) => formatNumber(value, 3)).join(' ')}
-        </span>
-    );
-};
-
 export class Candidate extends React.Component<Props> {
     render(): ReactElement {
         const { candidate } = this.props;
+
+        const votesToRender = candidate.votesOnLastStage ? candidate.votesOnLastStage : candidate.votesOnCurrentRound;
         return (
-            <div
+            <tr
+                key={candidate.name}
                 className={
                     candidate.status === Status.eliminated
                         ? 'eliminated'
@@ -35,9 +24,11 @@ export class Candidate extends React.Component<Props> {
                         : undefined
                 }
             >
-                <span>{candidate.name}</span>
-                {renderVotes(candidate)}
-            </div>
+                <td>{candidate.name}</td>
+                {votesToRender.map((value, index) => (
+                    <td key={index}>{formatNumber(value, 3)}</td>
+                ))}
+            </tr>
         );
     }
 }
