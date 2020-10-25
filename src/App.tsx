@@ -24,8 +24,11 @@ function App(): ReactElement {
             const candidates = candidateNames.map((candidate) => {
                 const match = candidate.match(/\[(.*)\]/);
                 const name = match ? match[1] : '';
+                const splitName = name.split(' ');
+                const reorderedName = [splitName[splitName.length - 1], ...splitName.slice(0, splitName.length - 1)];
+                const finalName = reorderedName.join(' ');
                 return {
-                    name,
+                    name: finalName,
                     status: Status.active,
                     votesOnCurrentRound: Array(NUM_VOTED).fill(0),
                 };
