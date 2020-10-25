@@ -66,5 +66,15 @@ button:disabled {
     height: 100%;
 }
 
+table {
+    border-collapse: collapse;
+}
 
-  
+tr {
+    border: 1px solid black;
+    padding: 15px;
+}
+
+th {
+    padding: 15px;
+}

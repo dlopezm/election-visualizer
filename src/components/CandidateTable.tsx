@@ -35,7 +35,7 @@ export class CandidateTable extends React.Component<Props, State> {
                 <table className="candidateTable">
                     <FlipMove>
                         <tr>
-                            <th>Name</th>
+                            <th>Candidate</th>
                             {votesToRender.map((index) => (
                                 <th key={index}>{`Rank ${index + 1} votes`}</th>
                             ))}
