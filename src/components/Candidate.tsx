@@ -32,6 +32,7 @@ export class Candidate extends React.Component<Props> {
                 {votesToRender.map((value, index) => (
                     <td key={index}>{formatNumber(value, 3)}</td>
                 ))}
+                {expanded && <td key={'total'}>{votesToRender.reduce((acc, vote) => acc + vote, 0)}</td>}
             </tr>
         );
     }

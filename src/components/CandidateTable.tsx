@@ -39,6 +39,7 @@ export class CandidateTable extends React.Component<Props, State> {
                             {votesToRender.map((index) => (
                                 <th key={index}>{`Rank ${index + 1} votes`}</th>
                             ))}
+                            {expanded && <th>Total</th>}
                         </tr>
                         {candidates.map((candidate) => (
                             <Candidate key={candidate.name} candidate={candidate} expanded={this.state.expanded} />
