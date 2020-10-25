@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/election-visualizer/static/css/main.557e9523.chunk.css",
-    "main.js": "/election-visualizer/static/js/main.9396f840.chunk.js",
-    "main.js.map": "/election-visualizer/static/js/main.9396f840.chunk.js.map",
+    "main.css": "/election-visualizer/static/css/main.8c87f51d.chunk.css",
+    "main.js": "/election-visualizer/static/js/main.8ad8742f.chunk.js",
+    "main.js.map": "/election-visualizer/static/js/main.8ad8742f.chunk.js.map",
     "runtime-main.js": "/election-visualizer/static/js/runtime-main.926f4712.js",
     "runtime-main.js.map": "/election-visualizer/static/js/runtime-main.926f4712.js.map",
     "static/js/2.2a07a2d3.chunk.js": "/election-visualizer/static/js/2.2a07a2d3.chunk.js",
     "static/js/2.2a07a2d3.chunk.js.map": "/election-visualizer/static/js/2.2a07a2d3.chunk.js.map",
     "index.html": "/election-visualizer/index.html",
-    "precache-manifest.afc6b3bc268de0a6b27fa7543c10c5a0.js": "/election-visualizer/precache-manifest.afc6b3bc268de0a6b27fa7543c10c5a0.js",
+    "precache-manifest.7ccbb3f5efe4d0cb6c618141ad9f656e.js": "/election-visualizer/precache-manifest.7ccbb3f5efe4d0cb6c618141ad9f656e.js",
     "service-worker.js": "/election-visualizer/service-worker.js",
-    "static/css/main.557e9523.chunk.css.map": "/election-visualizer/static/css/main.557e9523.chunk.css.map",
+    "static/css/main.8c87f51d.chunk.css.map": "/election-visualizer/static/css/main.8c87f51d.chunk.css.map",
     "static/js/2.2a07a2d3.chunk.js.LICENSE.txt": "/election-visualizer/static/js/2.2a07a2d3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.926f4712.js",
     "static/js/2.2a07a2d3.chunk.js",
-    "static/css/main.557e9523.chunk.css",
-    "static/js/main.9396f840.chunk.js"
+    "static/css/main.8c87f51d.chunk.css",
+    "static/js/main.8ad8742f.chunk.js"
   ]
 }
