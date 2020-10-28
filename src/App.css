@@ -1,3 +1,9 @@
 .App {
   text-align: center;
 }
+
+.info {
+  background-color: #ddddff;
+  color: #3030DD;
+  border: dotted 1px #3030DD;
+}

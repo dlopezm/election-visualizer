@@ -62,7 +62,7 @@ function calculateNewPhase(
     return { newCandidates: candidateStateForThisPhase, newBallots: ballots };
 }
 
-function eliminateCandidate(phase: Phase): void {
+function eliminateCandidate(phase: Phase): string {
     let eliminatedCandidateName: string | null = null;
     for (let i = phase.candidates.length - 1; i >= 0; --i) {
         if (phase.candidates[i].status === Status.active) {
@@ -73,13 +73,19 @@ function eliminateCandidate(phase: Phase): void {
         }
     }
 
-    phase.ballots.forEach((ballot) => {
-        ballot.votes.forEach((vote) => {
-            if (vote.candidateName === eliminatedCandidateName) {
-                vote.status = Status.eliminated;
-            }
+    if (!eliminatedCandidateName) {
+        throw Error('Something went really wrong, no candidate could be eliminated');
+    } else {
+        phase.ballots.forEach((ballot) => {
+            ballot.votes.forEach((vote) => {
+                if (vote.candidateName === eliminatedCandidateName) {
+                    vote.status = Status.eliminated;
+                }
+            });
         });
-    });
+
+        return eliminatedCandidateName;
+    }
 }
 
 export const calculateState = (candidates: Candidate[], ballots: Ballot[]): State => {
@@ -93,6 +99,7 @@ export const calculateState = (candidates: Candidate[], ballots: Ballot[]): Stat
     state.phases.push({
         candidates: newCandidates,
         ballots: newBallots,
+        info: `Any candidate with ${autoElectQuota} votes or more is automatically elected`,
     });
 
     while (
@@ -137,17 +144,19 @@ export const calculateState = (candidates: Candidate[], ballots: Ballot[]): Stat
                 state.phases.push({
                     candidates: newCandidates,
                     ballots: newBallots,
+                    info: `${candidate.name} had more than ${autoElectQuota} votes, so they were elected!`,
                 });
             }
         }
 
         if (!someCandidateElectedThisPhase) {
-            eliminateCandidate(phase);
+            const eliminatedName = eliminateCandidate(phase);
 
             const { newCandidates, newBallots } = calculateNewPhase(phase.candidates, phase.ballots);
             state.phases.push({
                 candidates: newCandidates,
                 ballots: newBallots,
+                info: `${eliminatedName} had the least votes, so they were eliminated!`,
             });
         }
     }

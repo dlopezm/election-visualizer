@@ -76,17 +76,17 @@ function App(): ReactElement {
         });
     }
 
+    const activePhase = fullState.phases[fullState.activePhase];
     return (
         <div className="App">
             <div>
-                {fullState.phases[fullState.activePhase] && (
+                {activePhase && (
                     <>
-                        <CandidateTable
-                            candidates={fullState.phases[fullState.activePhase].candidates}
-                        ></CandidateTable>
+                        <CandidateTable candidates={activePhase.candidates}></CandidateTable>
                     </>
                 )}
             </div>
+            <div className="info">{activePhase && activePhase.info}</div>
             <div>
                 <button onClick={decrementPhase} disabled={fullState.activePhase === 0}>
                     Previous phase
