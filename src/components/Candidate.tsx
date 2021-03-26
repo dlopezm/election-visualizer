@@ -20,13 +20,13 @@ export class Candidate extends React.Component<Props> {
         return (
             <tr
                 key={candidate.name}
-                className={
+                className={`${
                     candidate.status === Status.eliminated
                         ? 'eliminated'
                         : candidate.status === Status.elected
                         ? 'elected'
                         : undefined
-                }
+                } animated`}
             >
                 <td>{candidate.name}</td>
                 {votesToRender.map((value, index) => (

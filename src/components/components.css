@@ -47,6 +47,10 @@ button:disabled {
     background-color: lightgray;
 }
 
+.animated {
+    transition: all 0.5s ease;
+}
+
 .candidateTable{
     margin: auto;
     display:inline-block;

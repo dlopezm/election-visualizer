@@ -17,13 +17,13 @@ export function Ballot(props: Props): ReactElement {
                     <>
                         <li
                             key={vote.candidateName}
-                            className={
+                            className={`${
                                 vote.status === Status.eliminated
                                     ? 'eliminated'
                                     : vote.status === Status.elected
                                     ? 'elected'
                                     : undefined
-                            }
+                            } animated`}
                         >
                             {vote.candidateName}
                             {vote.value !== 1 ? `(${formatNumber(vote.value, 3)})` : ''}
