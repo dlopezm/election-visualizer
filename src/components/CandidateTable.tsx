@@ -50,7 +50,7 @@ export class CandidateTable extends React.Component<Props, State> {
                     className="expandButton"
                     onClick={(): void => this.setState({ expanded: !this.state.expanded })}
                 >
-                    {this.state.expanded ? '<' : '>'}
+                    {this.state.expanded ? '<' : '...'}
                 </button>
             </div>
         );
