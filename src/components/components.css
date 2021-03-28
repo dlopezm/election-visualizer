@@ -82,3 +82,12 @@ tr {
 th {
     padding: 15px;
 }
+
+.electionSelector {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    z-index: 2;
+}

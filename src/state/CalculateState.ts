@@ -3,7 +3,7 @@ import cloneDeep from 'lodash.clonedeep';
 import { NUM_ELECTED, NUM_VOTED, QUOTA_RATIO } from '../constants';
 import { Ballot, Vote } from './Ballot';
 import { Candidate } from './Candidate';
-import { Phase, State } from './State';
+import { Phase } from './Election';
 import { Status } from './Status';
 
 function calculateNewPhase(
@@ -88,26 +88,26 @@ function eliminateCandidate(phase: Phase): string {
     }
 }
 
-export const calculateState = (candidates: Candidate[], ballots: Ballot[]): State => {
+export const calculateElection = (candidates: Candidate[], ballots: Ballot[]): Phase[] => {
     const autoElectQuota = Math.ceil(ballots.length * QUOTA_RATIO);
     console.log(`Any candidate with ${autoElectQuota} votes or more is automatically elected`);
 
-    const state: State = { phases: [], activePhase: 0 };
+    const phases: Phase[] = [];
 
     const { newCandidates, newBallots } = calculateNewPhase(candidates, ballots);
 
-    state.phases.push({
+    phases.push({
         candidates: newCandidates,
         ballots: newBallots,
         info: `Any candidate with ${autoElectQuota} votes or more is automatically elected`,
     });
 
     while (
-        state.phases[state.phases.length - 1].candidates.filter((candidate) => candidate.status === Status.elected)
-            .length < NUM_ELECTED
+        phases[phases.length - 1].candidates.filter((candidate) => candidate.status === Status.elected).length <
+        NUM_ELECTED
     ) {
-        console.log('Phase', state.phases.length, 'starting');
-        const phase = cloneDeep(state.phases[state.phases.length - 1]);
+        console.log('Phase', phases.length, 'starting');
+        const phase = cloneDeep(phases[phases.length - 1]);
         let someCandidateElectedThisPhase = false;
 
         for (let i = 0; i < phase.candidates.length && !someCandidateElectedThisPhase; ++i) {
@@ -141,7 +141,7 @@ export const calculateState = (candidates: Candidate[], ballots: Ballot[]): Stat
                 });
 
                 const { newCandidates, newBallots } = calculateNewPhase(phase.candidates, phase.ballots);
-                state.phases.push({
+                phases.push({
                     candidates: newCandidates,
                     ballots: newBallots,
                     info: `${candidate.name} had more than ${autoElectQuota} votes, so they were elected!`,
@@ -153,12 +153,12 @@ export const calculateState = (candidates: Candidate[], ballots: Ballot[]): Stat
             const eliminatedName = eliminateCandidate(phase);
 
             const { newCandidates, newBallots } = calculateNewPhase(phase.candidates, phase.ballots);
-            state.phases.push({
+            phases.push({
                 candidates: newCandidates,
                 ballots: newBallots,
                 info: `${eliminatedName} had the least votes, so they were eliminated!`,
             });
         }
     }
-    return state;
+    return phases;
 };

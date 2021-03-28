@@ -1,13 +1,5 @@
-import { Ballot } from './Ballot';
-import { Candidate } from './Candidate';
-
-export interface Phase {
-    candidates: Candidate[];
-    ballots: Ballot[];
-    info: string;
-}
+import { Election } from './Election';
 
 export interface State {
-    phases: Phase[];
-    activePhase: number;
+    elections: Election[];
 }
