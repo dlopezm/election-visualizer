@@ -89,7 +89,7 @@ function eliminateCandidate(phase: Phase): string {
 }
 
 export const calculateElection = (candidates: Candidate[], ballots: Ballot[]): Phase[] => {
-    const autoElectQuota = Math.ceil(ballots.length * QUOTA_RATIO);
+    const autoElectQuota = Math.floor(ballots.length * QUOTA_RATIO) + 1; // strictly higher than the ratio
     console.log(`Any candidate with ${autoElectQuota} votes or more is automatically elected`);
 
     const phases: Phase[] = [];
