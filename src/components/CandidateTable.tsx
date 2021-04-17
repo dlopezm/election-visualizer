@@ -33,19 +33,18 @@ export class CandidateTable extends React.Component<Props, State> {
         return (
             <div className="candidateTableWrapper">
                 <table className="candidateTable">
-                    <FlipMove>
-                        <tr>
-                            <th>Candidate</th>
-                            {votesToRender.map((index) => (
-                                <th key={index}>{`Rank ${index + 1} votes`}</th>
-                            ))}
-                            {expanded && <th>Total</th>}
-                        </tr>
-                        {candidates.map((candidate) => (
-                            <Candidate key={candidate.name} candidate={candidate} expanded={this.state.expanded} />
+                    <tr>
+                        <th>Candidate</th>
+                        {votesToRender.map((index) => (
+                            <th key={index}>{`Rank ${index + 1} votes`}</th>
                         ))}
-                    </FlipMove>
+                        {expanded && <th>Total</th>}
+                    </tr>
+                    {candidates.map((candidate) => (
+                        <Candidate key={candidate.name} candidate={candidate} expanded={this.state.expanded} />
+                    ))}
                 </table>
+
                 <button
                     className="expandButton"
                     onClick={(): void => this.setState({ expanded: !this.state.expanded })}
