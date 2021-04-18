@@ -123,6 +123,7 @@ export const calculateElection = (candidates: Candidate[], ballots: Ballot[]): P
                 phase.ballots.forEach((ballot) => {
                     let votedForElectedCandidate = false;
                     let extraVotesDistributed = false;
+                    let activeCandidatesBeforeWinner = false;
                     ballot.votes.forEach((vote) => {
                         if (votedForElectedCandidate && !extraVotesDistributed) {
                             const candidateToDistributeVotesTo = phase.candidates.find(
@@ -135,7 +136,12 @@ export const calculateElection = (candidates: Candidate[], ballots: Ballot[]): P
                         }
                         if (vote.candidateName === candidate.name) {
                             vote.status = Status.elected;
-                            votedForElectedCandidate = true;
+                            if (!activeCandidatesBeforeWinner) {
+                                votedForElectedCandidate = true;
+                            }
+                        }
+                        if (vote.candidateName !== candidate.name && vote.status === Status.active) {
+                            activeCandidatesBeforeWinner = true;
                         }
                     });
                 });
