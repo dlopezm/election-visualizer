@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import FlipMove from 'react-flip-move';
 
 import './components.css';
 import { Candidate as CandidateType } from '../state/Candidate';
