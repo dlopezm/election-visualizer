@@ -9,5 +9,5 @@ export interface Phase {
 
 export interface Election {
     phases: Phase[];
-    date: Date;
+    title: string;
 }

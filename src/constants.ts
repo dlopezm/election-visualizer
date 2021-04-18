@@ -5,10 +5,10 @@ export const QUOTA_RATIO = 0.25; // what ratio of the total votes a candidate ne
 export const ELECTIONS = [
     {
         fileName: 'Spring_2021.csv',
-        date: new Date('2021-04-01'),
+        title: 'Spring 2021',
     },
     {
         fileName: 'Inaugural_Ballot.csv',
-        date: new Date('2020-10-01'),
+        title: 'Fall 2020',
     },
 ];

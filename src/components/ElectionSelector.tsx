@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import { DateTime } from 'luxon';
 import { Election as ElectionType } from './../state/Election';
 
 interface Props {
@@ -20,7 +19,7 @@ export function ElectionSelector(props: Props): ReactElement {
                     onClick={(): void => props.setActiveIndex(index)}
                     disabled={index === props.activeIndex}
                 >
-                    {DateTime.fromJSDate(election.date).toLocaleString(DateTime.DATE_FULL)}
+                    {election.title}
                 </button>
             ))}
         </div>

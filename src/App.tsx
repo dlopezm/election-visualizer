@@ -16,7 +16,7 @@ function App(): ReactElement {
     const [activeElectionIndex, setActiveElectionIndex] = useState<number>(0);
     useEffect(() => {
         async function getData(): Promise<void> {
-            ELECTIONS.forEach(async ({ fileName, date }, index) => {
+            ELECTIONS.forEach(async ({ fileName, title }, index) => {
                 const response = await fetch(`${process.env.PUBLIC_URL}/data/${fileName}`);
                 const text = await response.text();
                 const parsed = csvParser.parse(text);
@@ -63,7 +63,7 @@ function App(): ReactElement {
                 );
                 const phases = calculateElection(candidates, ballots);
                 fullState.elections[index] = {
-                    date,
+                    title,
                     phases,
                 };
                 setFullState({ elections: fullState.elections });
