@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
 
-import './components.css';
+import '../../components.css';
 import { Candidate as CandidateType } from '../state/Candidate';
 import { Candidate } from './Candidate';
-import { range } from '../utils';
+import { range } from '../../utils';
 import { NUM_VOTED } from '../constants';
 
 export interface Props {

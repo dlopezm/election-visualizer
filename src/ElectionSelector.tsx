@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import { Election as ElectionType } from './../state/Election';
+import { ElectionResult } from './types';
 
 interface Props {
-    elections: ElectionType[];
+    elections: ElectionResult[];
     activeIndex: number;
     setActiveIndex: (index: number) => void;
 }

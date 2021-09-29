@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import './components.css';
+import '../../components.css';
 import { Candidate as CandidateType } from '../state/Candidate';
 import { Status } from '../state/Status';
-import { formatNumber } from '../utils';
+import { formatNumber } from '../../utils';
 
 export interface Props {
     candidate: CandidateType;
