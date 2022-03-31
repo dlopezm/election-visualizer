@@ -7,5 +7,5 @@
    * `system`: either `score` (which should cover all new elections) or `stv` (for the first two). If at some point a different system is used, it'll have to be implemented here.
 3. Run it locally, make sure it works as expected (`yarn start`)
 4. Ship it!:
-4.1.: Commit and push the changes to `master`
-4.2: Run `yarn deploy`. It will be delopyed to github pages: https://dlopezm.github.io/election-visualizer/
+    1. Commit and push the changes to `master`
+    2. Run `yarn deploy`. It will be deployed to github pages: https://dlopezm.github.io/election-visualizer/
