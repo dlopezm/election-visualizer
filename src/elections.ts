@@ -1,5 +1,10 @@
 export const ELECTIONS = [
     {
+        fileName: 'Fall_2022.csv',
+        title: 'Fall 2022',
+        system: 'score',
+    },
+    {
         fileName: 'Spring_2022.csv',
         title: 'Spring 2022',
         system: 'score',
